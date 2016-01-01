@@ -1,0 +1,12 @@
+function degree_distribution(n)
+d=degrees_und(n); %BCT code
+
+unique_d=unique(d); %get unique
+[y,x]=hist(d,unique_d); %set
+close all
+loglog(x,y,'ok','MarkerFaceColor','k')
+xlabel('Degree')
+ylabel('Count')
+title('Degree Distribution')
+
+end
