@@ -1,0 +1,54 @@
+%%
+clear all
+close all
+clc
+
+%%
+%forloop in a script to generate 20 random networks in a matrix
+ 
+load air500;
+m = air500matrix;
+ 
+nbNodes=length(m); %number of nodes in original network
+nbEdges=nnz(m); %number of edges in origional network
+ 
+%preallocate the space for the random matrices
+randMatrices=zeros(nbNodes,nbNodes,20);
+Lrand = zeros(20,1);
+Crand = zeros(20,1);
+s_rand = zeros(20,1);
+
+for i=1:20 %for each matric we want to make
+   rng(i); %set seed for random number generator. wont know what the random 
+   %numbers are if you dont control the random # gen with rng. this gives
+   %a consistant starting point for the random # generator. want to make
+   %sure the only thing that changes during our simulation is the parameter
+   %and not the random number. You need to control the initial value to
+   %ensure the random numbers are in line with your parameters.
+   
+   %make the random matrix
+   randMatrices(:,:,1)=makerandCIJ_dir(nbNodes,nbEdges);
+   
+   %for the path length, generater a distance matrix
+   %calculate distance matrix for current random network
+   distMat=distance_bin(randMatrices(:,:,1));
+   
+   % calculate char path length
+   Lrand(i,1) = charpath(distMat);
+   
+   %claculate clustering coefficient...bd = binary directed
+   Crand(i,1) = mean(clustering_coef_bd(randMatrices(:,:,1)));
+   
+   %Calculate small-worldness
+  % s_rand(i,1) = Crand(i,1)/Lrand(i,1) 
+   
+end
+
+distMat = distance_bin(m); %Calculate distance for m
+L       = charpath(distMat); %Calculate char path len for m
+C       = mean(clustering_coef_bd(m)); %calculate mean clust coef
+
+%Cr= C real; Lr = L real
+Cr= C/mean(Crand); %normalised clust coef
+Lr= L/mean(Lrand); %normalised path len
+s=Cr/Lr            %normalised small world
