@@ -1,0 +1,46 @@
+%%
+clear all
+close all
+clc
+
+%%
+G = importdata('air500matrix.csv'); %Loads matrix data from a file
+E = importdata('air500labels.csv'); %Loads matrix labels from a file
+
+%%
+spy(G)
+
+%%
+unique(nonzeros(G))
+%since the only unique nonzeros are 1, this is a binary network
+
+%%
+nnz(G-G')
+
+%since the answer is not zero we have a directed, nonsymmetrc network
+
+%% mean clustering coef for real network
+cG= mean(clustering_coef_bd(G))
+
+%% Average shortest path for real network 
+%Distance binary function creates a binary matrix
+md = distance_bin(G);
+
+
+charpath(md) 
+%Charpath removes the infinity values 
+
+mean(nonzeros(md))
+
+%% to generate a random network and calculate shortest path and clustering coef
+%the value for the real network is twice as high as the value for the random network, thus supports that its a small world network. 
+%one criterian for a small world network is satisfied
+
+r = makerandCIJ_dir(length(G), nnz(G));
+cr= mean(clustering_coef_bd(r))
+
+%%now calculate the path length for the random network
+charpath(distance_bin(r))
+%since the random network has a close path length to the real network, this is another property of a small world netowrk. the 
+
+charpath(distance_bin(G))
