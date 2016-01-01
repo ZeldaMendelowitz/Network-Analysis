@@ -1,0 +1,23 @@
+function hub_architecture(q)
+
+[id,od,deg]=degrees_dir(q)
+%normal outputs of the function in degree, out degree, and node degree,
+%only flights leaving the airport needed to be considered the node
+v=deg
+find(v>175)
+disp(['number of degrees greater than one standard deviation' ,num2str(sum(v>175))])
+% the node degrees = v and the mean is calculated
+disp(['mean degree distribution is ',num2str(mean(v))])
+disp(['standard deviation of degree distribution is ',num2str(std(v))])
+%calculate mean degree distribution
+hist(deg,10)%'ok','MarkerFaceColor','k')
+% command to plot the histogram with 10 bins
+xlabel('Degree')
+ylabel('Count')
+title('Degree Distribution')
+
+
+
+
+end
+
