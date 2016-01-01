@@ -1,0 +1,59 @@
+%%
+clear all
+close all
+clc
+
+%%
+load air500
+G = air500matrix;
+nbNodes = length(G);
+nbEdges = nnz(G);
+
+%%
+%modularity
+%Q = fraction of edges within communities /expected fraction of such edges
+%scan gamma to get minimum q values. Gamma is a function that optimizes scanning for small modules.  
+gamma=0:.01:2;
+rng(1) %random number generator of 1
+for i=1:length(gamma)
+    [Ci(:,i) Q(i,1)]=modularity_dir(G,gamma(i));
+end
+
+
+%get location of min q val
+[~,minq]=min(Q);
+
+%find out what the corresponding gamma value is for that Q value
+disp(['Minimal Q is ',num2str(Q(minq)),'. Gamma = ',num2str(gamma(minq)),'.']);
+    
+%get the index where gamma = 1
+oneToPlot=find(gamma==1);
+
+nbModules=max(Ci(:,oneToPlot));
+disp(['There are ', num2str(nbModules),' modules where gamma = ', num2str(gamma(oneToPlot)),'.'])
+
+
+
+%%
+%plot the modules
+% sort for plotting
+[x,y,indsort]=grid_communities(Ci(:,oneToPlot));
+
+%plot
+figure;
+spy(G(indsort,indsort));
+hold on
+plot(x,y,'r','LineWidth',3)
+hold off
+
+%Q = fraction of edges within communities /expected fraction of such edges
+figure;
+plot(gamma,Q)
+xlabel('gamma')
+ylabel('Q') 
+
+%if you want to screen shot the current figure type gcf (get current
+%figure)
+%set background color to white
+set(gcf,'Color','w')
+
